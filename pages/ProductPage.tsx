@@ -44,9 +44,10 @@ const ProductPage: React.FC<ProductPageProps> = ({ productId, setView }) => {
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
       
-      // Facebook Pixel AddToCart event
-      if (typeof window !== 'undefined' && (window as any).fbq) {
-        (window as any).fbq('track', 'AddToCart', {
+      // Google Tag Manager AddToCart event
+      if (typeof window !== 'undefined' && (window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: 'AddToCart',
           content_name: product.name,
           content_category: 'Apparel',
           content_ids: [product.id.toString()],

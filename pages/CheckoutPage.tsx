@@ -68,7 +68,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ setView }) => {
         ecommerce: {
           transaction_id: transactionId,
           value: total,
-          currency: 'USD',
+          currency: 'inr',
           items: cart.map(item => ({
             item_id: item.id.toString(),
             item_name: item.name,

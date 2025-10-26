@@ -27,8 +27,10 @@ const ProductCard: React.FC<{ product: Product; onClick: () => void }> = ({ prod
 );
 
 const HomePage: React.FC<HomePageProps> = ({ setView }) => {
+  
   return (
     <div className="w-full">
+      
       <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-8 text-center">Our Collection</h1>
       <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {PRODUCTS.map((product) => (
