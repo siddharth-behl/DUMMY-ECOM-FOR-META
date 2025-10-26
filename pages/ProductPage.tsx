@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PRODUCTS } from '../constants';
 import { useCart } from '../App';
 
@@ -13,6 +13,19 @@ const ProductPage: React.FC<ProductPageProps> = ({ productId, setView }) => {
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(product?.sizes[0] || null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Facebook Pixel ViewContent event when product page loads
+  useEffect(() => {
+    if (product && typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: product.name,
+        content_category: 'Apparel',
+        content_ids: [product.id.toString()],
+        value: product.price,
+        currency: 'INR'
+      });
+    }
+  }, [product]);
 
   if (!product) {
     return (
@@ -38,7 +51,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ productId, setView }) => {
           content_category: 'Apparel',
           content_ids: [product.id.toString()],
           value: product.price,
-          currency: 'USD'
+          currency: 'INR'
         });
       }
     } else {
