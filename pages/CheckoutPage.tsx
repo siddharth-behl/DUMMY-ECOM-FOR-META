@@ -4,7 +4,7 @@ import { useCart } from '../App';
 import { CartItem } from '../types';
 
 interface CheckoutPageProps {
-  setView: (view: { page: 'home' } | { page: 'thankyou' }) => void;
+  setView: (view: { page: 'home' } | { page: 'thankyou', purchaseData?: { value: number; email: string; phone: string; transactionId: string } }) => void;
 }
 
 const CartListItem: React.FC<{ item: CartItem }> = ({ item }) => {
@@ -53,8 +53,46 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ setView }) => {
         alert("Your cart is empty.");
         return;
     }
+    
+    // Get form data
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const email = formData.get('email') as string;
+    const phone = formData.get('phone') as string;
+    
+    const transactionId = `TXN_${Date.now()}`;
+    
+    // Google Tag Manager data layer push
+    if (typeof window !== 'undefined' && (window as any).dataLayer) {
+      (window as any).dataLayer.push({
+        event: 'purchase',
+        ecommerce: {
+          transaction_id: transactionId,
+          value: total,
+          currency: 'USD',
+          items: cart.map(item => ({
+            item_id: item.id.toString(),
+            item_name: item.name,
+            item_category: 'Apparel',
+            item_variant: item.size,
+            quantity: item.quantity,
+            price: item.price
+          }))
+        },
+        customer_email: email,
+        customer_phone: phone
+      });
+    }
+    
     clearCart();
-    setView({ page: 'thankyou' });
+    setView({ 
+      page: 'thankyou', 
+      purchaseData: {
+        value: total,
+        email: email,
+        phone: phone,
+        transactionId: transactionId
+      }
+    });
   };
 
   return (
@@ -75,11 +113,19 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ setView }) => {
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
-                <input type="text" id="name" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
+                <input type="text" id="name" name="name" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
               </div>
               <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                <input type="text" id="address" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
+                <input type="text" id="address" name="address" required className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gray-800 focus:border-gray-800 sm:text-sm" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

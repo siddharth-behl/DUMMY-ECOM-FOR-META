@@ -30,6 +30,17 @@ const ProductPage: React.FC<ProductPageProps> = ({ productId, setView }) => {
       addToCart(product, selectedSize);
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
+      
+      // Facebook Pixel AddToCart event
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'AddToCart', {
+          content_name: product.name,
+          content_category: 'Apparel',
+          content_ids: [product.id.toString()],
+          value: product.price,
+          currency: 'USD'
+        });
+      }
     } else {
       alert('Please select a size.');
     }

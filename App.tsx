@@ -12,7 +12,7 @@ type View =
   | { page: 'home' }
   | { page: 'product'; productId: number }
   | { page: 'checkout' }
-  | { page: 'thankyou' };
+  | { page: 'thankyou'; purchaseData?: { value: number; email: string; phone: string; transactionId: string } };
 
 interface CartContextType {
   cart: CartItem[];
@@ -88,7 +88,7 @@ export default function App() {
       case 'checkout':
         return <CheckoutPage setView={setView} />;
       case 'thankyou':
-        return <ThankYouPage setView={setView} />;
+        return <ThankYouPage setView={setView} purchaseData={view.purchaseData} />;
       default:
         return <HomePage setView={setView} />;
     }
